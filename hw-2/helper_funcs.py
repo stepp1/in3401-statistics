@@ -2,7 +2,6 @@ import pandas as pd
 from dateutil.parser import parse
 from datetime import timedelta
 import requests
-from tqdm.auto import tqdm
 
 def download_file(url, filename):
     """
@@ -11,10 +10,8 @@ def download_file(url, filename):
     chunkSize = 1024
     r = requests.get(url, stream=True)
     with open(filename, 'wb') as f:
-        pbar = tqdm(unit="B", total=int(r.headers['Content-Length']))
         for chunk in r.iter_content(chunk_size=chunkSize):
             if chunk:  # filter out keep-alive new chunks
-                pbar.update(len(chunk))
                 f.write(chunk)
     return filename
 
