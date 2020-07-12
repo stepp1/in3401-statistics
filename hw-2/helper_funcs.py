@@ -1,7 +1,7 @@
 import pandas as pd
 from dateutil.parser import parse
 from datetime import timedelta
-import request
+import requests
 
 def download_file(url, filename):
     """
