@@ -2,7 +2,7 @@ import pandas as pd
 from dateutil.parser import parse
 from datetime import timedelta
 import requests
-from tqdm.autonotebook import tqdm
+from tqdm.auto import tqdm
 
 def download_file(url, filename):
     """
