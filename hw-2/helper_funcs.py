@@ -49,8 +49,8 @@ def open_global_ts(path):
 def ts_since_two_per_country(df):
     df = df.reset_index()
 
-    countries = [df[[country] >= 2][country].reset_index()[[country]]
-                 for country in df.columns]
+    countries = [df[df[country] > 2][country].reset_index()[[country]]
+                 for country in df.columns[1:]]
 
     return countries
 
