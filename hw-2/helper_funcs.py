@@ -30,7 +30,7 @@ def open_global_ts(path):
     ts: Pandas Dataframe
     """
 
-    ts = pd.read_csv(file)
+    ts = pd.read_csv(path)
 
     ini, end = parse(ts.columns[3]), parse(ts.columns[-1])
     delta = end - ini
