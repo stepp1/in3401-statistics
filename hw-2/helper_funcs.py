@@ -39,7 +39,7 @@ def open_global_ts(path):
 
     ts = ts[ts_cols + ['Country']].set_index('Country').T
 
-    ts.index = pd.to_datetime(ts_confirmed.index)
+    ts.index = pd.to_datetime(ts.index)
     ts.sort_index(inplace=True)
     ts.columns.name = ''
 
