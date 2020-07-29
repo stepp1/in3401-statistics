@@ -47,11 +47,23 @@ def open_global_ts(path):
 
 
 def ts_since_two_per_country(df):
-    df = df.reset_index()
+    """
+    Abre serie de tiempo global por pais y extrae series de tiempo
+    para cada pais desde que el valor es superior a 2.
 
-    countries = [df[df[country] > 2][country].reset_index()[[country]]
-                 for country in df.columns[1:]]
+    Parametros
+    ----------
+    df : Pandas Dataframe 
+        Dataframe que contiene una serie de tiempo por pais.
 
+    Returns
+    -------
+    countries: list of Dataframes per country
+    """
+    
+    df = df.loc[:,~df.columns.duplicated()]
+    countries = [df[df[country] > 2][[country]] for country in df.columns[:]]
+    
     return countries
 
 
