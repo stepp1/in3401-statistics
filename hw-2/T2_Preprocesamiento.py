@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from helper_funcs import *
+
 def preprocesamiento_casos():
     ts_global = {}
     for file in Path('.').glob('*_global.csv'):
