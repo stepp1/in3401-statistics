@@ -7,7 +7,7 @@ def download_file(url, filename):
     """
     Helper method handling downloading large files from `url` to `filename`. Returns a pointer to `filename`.
     """
-    chunkSize = 1024
+    chunkSize = 1024 ** 2  
     r = requests.get(url, stream=True)
     with open(filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=chunkSize):
