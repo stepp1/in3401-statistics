@@ -20,7 +20,7 @@ def preprocesamiento_casos():
     print(f'Series de tiempo Casos COVID para : {list(ts_global.keys())} desde {first_case} hasta {last_case}.\n')
     return ts_global
 
-def preprocesamiento_medidas(medidas_xls):
+def preprocesamiento_medidas(medidas_xls, ts_global):
     indices_ts = {}
     countries_indices_int = {}
 
@@ -60,7 +60,7 @@ def preprocesamiento_medidas(medidas_xls):
         countries_indices_int[index_name] = countries_ts
     return indices_ts, countries_indices_int
 
-def preprocesamiento_wbd():
+def preprocesamiento_wbd(ts_global):
     wdi_ind = pd.read_csv('WDIData.csv')
     wdi_ind.loc[wdi_ind['Country Name'] == 'United States', 'Country Name'] = 'US'
 
