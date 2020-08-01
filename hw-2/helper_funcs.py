@@ -32,7 +32,7 @@ def open_global_ts(path):
 
     ts = pd.read_csv(path)
 
-    ini, end = parse(ts.columns[3]), parse(ts.columns[-1])
+    ini, end = parse(ts.columns[4]), parse(ts.columns[-1])
     delta = end - ini
     dates = [ini + timedelta(days=i) for i in range(delta.days + 1)]
     ts_cols = [date.strftime('%-m/%-d/%y') for date in dates]
