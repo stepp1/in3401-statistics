@@ -20,7 +20,7 @@ def preprocesamiento_casos():
     print(f'Series de tiempo Casos COVID para : {list(ts_global.keys())} desde {first_case} hasta {last_case}.\n')
     return ts_global
 
-def preprocesamiento_medidas(medidas_xls):
+def preprocesamiento_medidas(medidas_xls, ts_global):
     # Se realizan algunos remplazos para seguir el formato de las series de tiempo de los casos
     replace_cnames_indices = {
         'Slovak Republic' : 'Slovakia',
