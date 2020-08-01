@@ -91,7 +91,7 @@ def preprocesamiento_medidas(medidas_xls, ts_global):
         countries_indices_int[index_name] = countries_ts
     return indices_ts, medidas_ts, countries_indices_int
 
-def topics_df_common_countries(ts_global=None, verbose=0):
+def topics_df_common_countries(ts_global=None, wdi_ind=None, verbose=0):
     topics_indName = pd.read_csv('WDISeries.csv')[['Topic', 'Indicator Name']]
     health_topics = topics_indName[topics_indName['Topic'].str.contains("Health")]['Topic'].unique()
 
@@ -105,18 +105,20 @@ def topics_df_common_countries(ts_global=None, verbose=0):
 
     selected_topic_indicators = topics_indName[topics_indName['Topic'].isin(health_topics)]
 
-    common_countries = set(wdi_ind[(wdi_ind['Indicator Name'].isin(health_indicators))]['Country Name'].unique()).intersection(set(ts_global['confirmed'].columns))
+    if wdi_ind is not None:
+        common_countries = set(wdi_ind[(wdi_ind['Indicator Name'].isin(health_indicators))]['Country Name'].unique()).intersection(set(ts_global['confirmed'].columns))
+        if verbose:
+            print('Existen', len(common_countries), 'paises en la interseccion de fuentes.\n')
+        
+        return selected_topic_indicators, common_countries
 
-    if verbose:
-        print('Existen', len(common_countries), 'paises en la interseccion de fuentes.\n')
-    return selected_topic_indicators, common_countries
+    return selected_topic_indicators
 
 def preprocesamiento_wbd(ts_global):
     wdi_ind = pd.read_csv('WDIData.csv')
     wdi_ind.loc[wdi_ind['Country Name'] == 'United States', 'Country Name'] = 'US'
 
-
-    selected_topic_indicators, common_countries = topics_df_common_countries(ts_global=ts_global, verbose=1)    
+    selected_topic_indicators, common_countries = topics_df_common_countries(ts_global=ts_global, wdi_ind=wdi_ind, verbose=1)    
     health_indicators = selected_topic_indicators['Indicator Name']
 
     health_ind_df = wdi_ind[wdi_ind['Indicator Name'].isin(health_indicators) & wdi_ind['Country Name'].isin(common_countries)]
