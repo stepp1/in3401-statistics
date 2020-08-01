@@ -59,7 +59,9 @@ def preprocesamiento_medidas(medidas_xls, ts_global):
             medida_ts.columns.name = ''
             
             medidas_ts[index_name] = medida_ts
-
+            
+    print('\n')
+    
     # obtenemos solo los indices
     indices_ts = {}
     countries_indices_int = {}
@@ -78,7 +80,7 @@ def preprocesamiento_medidas(medidas_xls, ts_global):
         indice_ts = indice_ts[indice_ts['CountryName'].isin(countries_ts)]
 
         index_name = indice.split('_')[-1]
-        print(f'Para el indice {index_name: ^20} existen {len(countries_ts)} paises en Series de tiempo Medidas COVID y Casos COVID.')
+        print(f'Para el indice {index_name: ^30} existen {len(countries_ts)} paises en Series de tiempo Medidas COVID y Casos COVID.')
 
         # Utilizamos formato de series de tiempo (index: fecha, columnas: paises)
         indice_ts = indice_ts.drop(labels='CountryCode', axis=1).set_index('CountryName').T
