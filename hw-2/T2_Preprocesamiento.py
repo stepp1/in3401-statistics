@@ -20,23 +20,52 @@ def preprocesamiento_casos():
     print(f'Series de tiempo Casos COVID para : {list(ts_global.keys())} desde {first_case} hasta {last_case}.\n')
     return ts_global
 
-def preprocesamiento_medidas(medidas_xls, ts_global):
+def preprocesamiento_medidas(medidas_xls):
+    # Se realizan algunos remplazos para seguir el formato de las series de tiempo de los casos
+    replace_cnames_indices = {
+        'Slovak Republic' : 'Slovakia',
+        'Czech Republic' : 'Czechia',
+        'Kyrgyz Republic' : 'Kyrgyzstan', 
+        'Cape Verde': 'Cabo Verde', 
+        'Taiwan' : 'Taiwan*',
+        'South Korea'  : 'Korea, South',
+        'United States' : 'US'
+    }
+
+    # obtenemos solo medidas
+    medidas_ts = {}
+    for indice in medidas_xls.sheet_names[:-4]:
+            if 'flag' in indice:
+                continue
+
+            medida_ts = pd.read_excel(medidas_xls, indice)
+            
+            for actual, remplazo in replace_cnames_indices.items(): 
+                medida_ts.loc[medida_ts['CountryName'] == actual, 'CountryName'] = remplazo
+
+            # Se eliminan las últimas 3 filas basura
+            medida_ts = medida_ts.drop(medida_ts.tail(3).index).dropna(thresh=1*len(medida_ts.columns)/5, axis=0)
+
+            # Se filtran por paises que esten la interseccion
+            countries_ts = set(medida_ts.CountryName.unique()).intersection(set(ts_global['confirmed'].columns))
+            medida_ts = medida_ts[medida_ts['CountryName'].isin(countries_ts)]
+
+            index_name = indice.split('_')[-1]
+            print(f'Para el indice {index_name: ^30} existen {len(countries_ts)} paises en Series de tiempo Medidas COVID y Casos COVID.')
+
+            # Utilizamos formato de series de tiempo (index: fecha, columnas: paises)
+            medida_ts = medida_ts.drop(labels='CountryCode', axis=1).set_index('CountryName').T
+            medida_ts.index = pd.to_datetime([parse(idx) for idx in medida_ts.index])
+            medida_ts.columns.name = ''
+            
+            medidas_ts[index_name] = medida_ts
+
+    # obtenemos solo los indices
     indices_ts = {}
     countries_indices_int = {}
 
     for indice in medidas_xls.sheet_names[-4:]:
         indice_ts = pd.read_excel(medidas_xls, indice)
-
-        # Se realizan algunos remplazos para seguir el formato de las series de tiempo de los casos
-        replace_cnames_indices = {
-            'Slovak Republic' : 'Slovakia',
-            'Czech Republic' : 'Czechia',
-            'Kyrgyz Republic' : 'Kyrgyzstan', 
-            'Cape Verde': 'Cabo Verde', 
-            'Taiwan' : 'Taiwan*',
-            'South Korea'  : 'Korea, South',
-            'United States' : 'US'
-        }
         
         for actual, remplazo in replace_cnames_indices.items(): 
             indice_ts.loc[indice_ts['CountryName'] == actual, 'CountryName'] = remplazo
@@ -58,7 +87,7 @@ def preprocesamiento_medidas(medidas_xls, ts_global):
         
         indices_ts[index_name] = indice_ts
         countries_indices_int[index_name] = countries_ts
-    return indices_ts, countries_indices_int
+    return indices_ts, medidas_ts, countries_indices_int
 
 def preprocesamiento_wbd(ts_global):
     wdi_ind = pd.read_csv('WDIData.csv')
