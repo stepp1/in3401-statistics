@@ -106,7 +106,7 @@ def topics_df_common_countries(ts_global=None, wdi_ind=None, verbose=0):
     selected_topic_indicators = topics_indName[topics_indName['Topic'].isin(health_topics)]
 
     if wdi_ind is not None:
-        common_countries = set(wdi_ind[(wdi_ind['Indicator Name'].isin(health_indicators))]['Country Name'].unique()).intersection(set(ts_global['confirmed'].columns))
+        common_countries = set(wdi_ind[(wdi_ind['Indicator Name'].isin(selected_topic_indicators['Indicator Name']))]['Country Name'].unique()).intersection(set(ts_global['confirmed'].columns))
         if verbose:
             print('Existen', len(common_countries), 'paises en la interseccion de fuentes.\n')
         
